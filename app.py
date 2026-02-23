@@ -1,7 +1,7 @@
 import io
 import os
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 import google.generativeai as genai 
 from PIL import Image              
 
