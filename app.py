@@ -8,6 +8,8 @@ from PIL import Image
 app = Flask(__name__)
 app.secret_key = 'A231Juhsda334gtyfaus-1204os-NADHsf' # Cambia esto por algo aleatorio
 
+
+
 API_KEY = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 MODEL_ID = "gemini-3-flash-preview"
@@ -76,7 +78,9 @@ def cargar_referencias(subcarpeta):
     
     return fotos_referencia
 
-# --- RUTAS DE NAVEGACIÓN ---
+REFS_GRATINADO = cargar_referencias('refs_gratinado')
+REFS_ROLLITOS = cargar_referencias('refs_rollitos')
+REFS_PLANCHA = cargar_referencias('refs_plancha')
 
 @app.route('/')
 @login_required
@@ -104,7 +108,7 @@ def analizar_gratinado():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_gratinado'
-    refs = cargar_referencias('refs_gratinado')
+    refs = REFS_GRATINADO
     
     prompt = """
     ACTÚA COMO UN AUDITOR DE CONTROL DE CALIDAD VISUAL (ESPECIALISTA EN ALIMENTOS). Tu misión es determinar la aptitud de una muestra de queso gratinado comparándola con un estándar de referencia.
@@ -140,7 +144,7 @@ def analizar_color():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_rollitos'
-    refs = cargar_referencias('refs_rollitos')
+    refs = REFS_ROLLITOS
     
     prompt = """
     IA AUDITORA DE TEXTURA DE ROLLITOS DE MOZZARELLA.
@@ -179,7 +183,7 @@ def analizar_fundido():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_plancha'
-    refs = cargar_referencias('refs_plancha')
+    refs = REFS_PLANCHA
     
     prompt = """
     IA AUDITORA DE fundido DE MOZZARELLA.
