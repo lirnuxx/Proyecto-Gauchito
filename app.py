@@ -58,25 +58,18 @@ def logout():
 
 # --- FUNCIÓN AUXILIAR: CARGA DE REFERENCIAS ---
 def cargar_referencias(subcarpeta):
-    """
-    Busca imágenes en static/img/[subcarpeta] y las devuelve como lista de objetos PIL.
-    Mantiene el orden alfabético para que la IA reciba primero el IB Bajo, luego Medio, etc.
-    """
     ruta_base = os.path.join('static', 'img', subcarpeta)
-    fotos_referencia = []
-    
+    rutas = []
+
     if os.path.exists(ruta_base):
-        # Ordenar archivos asegura que la IA reciba las escalas en orden lógico
-        archivos = sorted([f for f in os.listdir(ruta_base) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+        archivos = sorted([
+            f for f in os.listdir(ruta_base)
+            if f.lower().endswith(('.png', '.jpg', '.jpeg'))
+        ])
         for archivo in archivos:
-            ruta_completa = os.path.join(ruta_base, archivo)
-            try:
-                img = Image.open(ruta_completa)
-                fotos_referencia.append(img)
-            except Exception as e:
-                print(f"Error cargando {archivo}: {e}")
-    
-    return fotos_referencia
+            rutas.append(os.path.join(ruta_base, archivo))
+
+    return rutas
 
 REFS_GRATINADO = cargar_referencias('refs_gratinado')
 REFS_ROLLITOS = cargar_referencias('refs_rollitos')
@@ -108,7 +101,11 @@ def analizar_gratinado():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_gratinado'
-    refs = REFS_GRATINADO
+    imagenes_refs = []
+    for ruta in REFS_GRATINADO:
+        img = Image.open(ruta)
+        img.thumbnail((800, 800))  # reduce tamaño
+        imagenes_refs.append(img)
     
     prompt = """
     ACTÚA COMO UN AUDITOR DE CONTROL DE CALIDAD VISUAL (ESPECIALISTA EN ALIMENTOS). Tu misión es determinar la aptitud de una muestra de queso gratinado comparándola con un estándar de referencia.
@@ -135,7 +132,13 @@ Si la muestra es porosa, el veredicto SIEMPRE es NO APTO - POROSA, aunque el col
 Responde ÚNICAMENTE con este formato, sin introducciones ni explicaciones: Muestra [N]: [APTO/NO APTO] - [MOTIVO] (Motivos posibles: RANGO DORADO / QUEMADA / POROSA / CRUDA)
     """
     
-    response = model.generate_content([prompt, *refs, img_lote])
+    
+    
+    response = model.generate_content([
+        prompt,
+        *imagenes_refs,
+        img_lote
+    ])
     return response.text.strip()
 
 @app.route('/analizar_color', methods=['POST'])
@@ -144,7 +147,11 @@ def analizar_color():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_rollitos'
-    refs = REFS_ROLLITOS
+    imagenes_refs = []
+    for ruta in REFS_ROLLITOS:
+        img = Image.open(ruta)
+        img.thumbnail((800, 800))  # reduce tamaño
+        imagenes_refs.append(img)
     
     prompt = """
     IA AUDITORA DE TEXTURA DE ROLLITOS DE MOZZARELLA.
@@ -174,7 +181,13 @@ NO APTO (Rango Cálido): Tonos claramente amarillos, pajizos o ámbar (Similares
     BLOQUE NO APTA: Si hay muestras amarillas, escribe una unica línea: [NO APTO AMARILLO ("LA EMPANADERIA"): N° [N], N° [N]... ]
     """
     
-    response = model.generate_content([prompt, *refs, img_lote])
+    
+    
+    response = model.generate_content([
+        prompt,
+        *imagenes_refs,
+        img_lote
+    ])
     return response.text.strip()
 
 @app.route('/analizar_fundido', methods=['POST'])
@@ -183,7 +196,11 @@ def analizar_fundido():
     img_lote = Image.open(io.BytesIO(file.read()))
     
     # Carga referencias específicas de la carpeta 'refs_plancha'
-    refs = REFS_PLANCHA
+    imagenes_refs = []
+    for ruta in REFS_PLANCHA:
+        img = Image.open(ruta)
+        img.thumbnail((800, 800))  # reduce tamaño
+        imagenes_refs.append(img)
     
     prompt = """
     IA AUDITORA DE fundido DE MOZZARELLA.
@@ -211,7 +228,11 @@ Si no hay aptas, omite ese bloque. Si todas son aptas, omite el listado de falla
 No añadas introducciones ni conclusiones. Solo los bloques de datos.
     """
     
-    response = model.generate_content([prompt, *refs, img_lote])
+    response = model.generate_content([
+        prompt,
+        *imagenes_refs,
+        img_lote
+    ])
     return response.text.strip()
 
 if __name__ == '__main__':
