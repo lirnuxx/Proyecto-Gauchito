@@ -1,9 +1,9 @@
-import os
 import io
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import google.generativeai as genai
-from PIL import Image
+import os
+from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required
+import google.generativeai as genai 
+from PIL import Image              
 
 app = Flask(__name__)
 app.secret_key = 'A231Juhsda334gtyfaus-1204os-NADHsf' # Cambia esto por algo aleatorio
