@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+     <link rel="icon" href="/static/img/logo_gauchito.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - El Gauchito</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #0f172a;">
+    <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
+        <div class="brand" style="justify-content: center; margin-bottom: 20px; color: #1e293b;">
+            <img src="/static/img/logo_gauchito.png" alt="Logo" class="logo-empresa">
+            <span>El <strong>Gauchito</strong></span>
+        </div>
+        
+        <h2>Acceso Clientes</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <p style="color: var(--danger); font-size: 0.85rem;">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="username" placeholder="Usuario" required 
+                   style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+            <input type="password" name="password" placeholder="Contraseña" required 
+                   style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #cbd5e1;">
+            <button type="submit">ENTRAR AL SISTEMA</button>
+        </form>
+    </div>
+    <div id="loading-screen" class="loading-overlay" style="display: none;">
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p>Iniciando Sistema de Auditoría...</p>
+            <span class="loader-subtext">Cargando módulos de IA y referencias</span>
+    </div>
+</div>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function() {
+    // Mostrar el loader al hacer click en el botón de Entrar
+    document.getElementById('loading-screen').style.display = 'flex';
+});
+</script>
+</body>
+</html>
