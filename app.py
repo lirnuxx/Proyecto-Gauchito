@@ -8,10 +8,10 @@ from PIL import Image
 app = Flask(__name__)
 app.secret_key = 'A231Juhsda334gtyfaus-1204os-NADHsf' # Cambia esto por algo aleatorio
 
-# CONFIGURACIÓN
-API_KEY = "AIzaSyBtW6EP3GXtYm_sNa_YIaJ1tSR6V-7JppE"
-client = genai.Client(api_key=API_KEY)
+API_KEY = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=API_KEY)
 MODEL_ID = "gemini-3-flash-preview"
+model = genai.GenerativeModel(MODEL_ID)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -131,7 +131,7 @@ Si la muestra es porosa, el veredicto SIEMPRE es NO APTO - POROSA, aunque el col
 Responde ÚNICAMENTE con este formato, sin introducciones ni explicaciones: Muestra [N]: [APTO/NO APTO] - [MOTIVO] (Motivos posibles: RANGO DORADO / QUEMADA / POROSA / CRUDA)
     """
     
-    response = client.models.generate_content(model=MODEL_ID, contents=[prompt, *refs, img_lote])
+    response = model.generate_content([prompt, *refs, img_lote])
     return response.text.strip()
 
 @app.route('/analizar_color', methods=['POST'])
@@ -170,7 +170,7 @@ NO APTO (Rango Cálido): Tonos claramente amarillos, pajizos o ámbar (Similares
     BLOQUE NO APTA: Si hay muestras amarillas, escribe una unica línea: [NO APTO AMARILLO ("LA EMPANADERIA"): N° [N], N° [N]... ]
     """
     
-    response = client.models.generate_content(model=MODEL_ID, contents=[prompt, *refs, img_lote])
+    response = model.generate_content([prompt, *refs, img_lote])
     return response.text.strip()
 
 @app.route('/analizar_fundido', methods=['POST'])
@@ -207,7 +207,7 @@ Si no hay aptas, omite ese bloque. Si todas son aptas, omite el listado de falla
 No añadas introducciones ni conclusiones. Solo los bloques de datos.
     """
     
-    response = client.models.generate_content(model=MODEL_ID, contents=[prompt, *refs, img_lote])
+    response = model.generate_content([prompt, *refs, img_lote])
     return response.text.strip()
 
 if __name__ == '__main__':
