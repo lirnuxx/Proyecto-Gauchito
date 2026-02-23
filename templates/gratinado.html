@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" href="/static/img/logo_gauchito.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>IA Gratinado</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+        <img src="/static/img/logo_gauchito.png" alt="Logo" class="logo-empresa">
+        <span>El Gauchito</span>
+        </div>
+        <input type="checkbox" id="menu-toggle" hidden>
+        <label for="menu-toggle" class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        <div class="nav-links">
+            <a href="/" class="{{ 'active' if request.path == '/' }}">PRB de Gratinado</a>
+            <a href="/color" class="{{ 'active' if request.path == '/color' }}">PRB de Color</a>
+            <a href="/fundido" class="{{ 'active' if request.path == '/fundido' }}">PRB de Fundido</a>
+            <div class="theme-switch-wrapper">
+                <span class="mode-label">☀️</span>
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <div class="slider round"></div>
+                    </label>
+                <span class="mode-label">🌙</span>
+            </div>
+            <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <main class="main-container">
+    <div class="container">
+        <div class="card">
+            <h2>Prueba de Gratinado</h2>
+            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                <img id="preview">
+                <p id="label">Subir foto de las muestras</p>
+                <input type="file" id="fileInput" hidden accept="image/*">
+            </div>
+            <button id="runBtn">ANALIZAR MUESTRA</button>
+            <div id="results" class="lista-resultados"></div>
+            <div class="aviso-responsabilidad">
+                <p><b>Nota importante:</b> Los resultados obtenidos del análisis realizado por el sistema son solo orientativos, dejando como evaluación final el criterio del analista del laboratorio.</p>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>Contacto Desarrollador</h4>
+            <p><strong>Nombre:</strong> Mateo Scovenna</p>
+        </div>
+        <div class="footer-section">
+            <h4>Redes y Soporte</h4>
+            <div class="footer-links">
+                <a href="mailto:mat.scvnna@gmail.com">📧 mat.scvnna@gmail.com</a>
+                <a href="https://instagram.com/mat.svn" target="_blank">📸 Instagram</a>
+                <a href="tel:+5492324506986">📞 +54 9 2324 50-6986</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 El Gauchito - Sistema de Control de Calidad
+    </div>
+</footer>
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-content">
+             <img src="/static/img/logo_gauchito.png" alt="Logo Gauchito" class="modal-logo">
+            <h3>¿Cerrar Sesión?</h3>
+            <p>Se perderán los análisis actuales que no hayan sido guardados.</p>
+            <div class="modal-actions">
+                <button onclick="cerrarModal()" class="btn-cancelar">Cancelar</button>
+                <a href="/logout" class="btn-confirmar">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

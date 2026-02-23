@@ -82,7 +82,7 @@ def cargar_referencias(subcarpeta):
 @login_required
 def gratinado_page():
     # Página inicial: IA Gratinado
-    return render_template('index.html')
+    return render_template('gratinado.html')
 
 @app.route('/color')
 @login_required
