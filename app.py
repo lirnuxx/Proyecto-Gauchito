@@ -1,6 +1,7 @@
 import io
 import os
 from google.genai import types
+import base64
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from google import genai
@@ -9,7 +10,19 @@ from PIL import Image
 app = Flask(__name__)
 app.secret_key = 'A231Juhsda334gtyfaus-1204os-NADHsf' # Cambia esto por algo aleatorio
 
+def pil_to_part(img):
+    import io
+    from google.genai import types
 
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG")
+
+    return types.Part(
+        inline_data=types.Blob(
+            mime_type="image/jpeg",
+            data=buffer.getvalue()
+        )
+    )
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=API_KEY)
@@ -75,6 +88,8 @@ REFS_GRATINADO = cargar_referencias('refs_gratinado')
 REFS_ROLLITOS = cargar_referencias('refs_rollitos')
 REFS_PLANCHA = cargar_referencias('refs_plancha')
 
+
+
 @app.route('/')
 @login_required
 def gratinado_page():
@@ -131,14 +146,19 @@ Si la muestra es porosa, el veredicto SIEMPRE es NO APTO - POROSA, aunque el col
 4. FORMATO DE RESPUESTA (ESTRICTO)
 Responde ÚNICAMENTE con este formato, sin introducciones ni explicaciones: Muestra [N]: [APTO/NO APTO] - [MOTIVO] (Motivos posibles: RANGO DORADO / QUEMADA / POROSA / CRUDA)
     """
+    
+    contents = [prompt]
+
+    for img in imagenes_refs:
+        contents.append(pil_to_part(img))
+
+    contents.append(pil_to_part(img_lote))
+
     response = client.models.generate_content(
-    model=MODEL_ID,
-    contents=[
-        prompt,
-        *[types.Part.from_image(img) for img in imagenes_refs],
-        types.Part.from_image(img_lote)
-    ]
-)
+        model=MODEL_ID,
+        contents=contents
+    )
+
     return response.text.strip()
 
 @app.route('/analizar_color', methods=['POST'])
@@ -180,15 +200,22 @@ NO APTO (Rango Cálido): Tonos claramente amarillos, pajizos o ámbar (Similares
 
     BLOQUE NO APTA: Si hay muestras amarillas, escribe una unica línea: [NO APTO AMARILLO ("LA EMPANADERIA"): N° [N], N° [N]... ]
     """
+      
+    contents = [prompt]
+
+    for img in imagenes_refs:
+        contents.append(pil_to_part(img))
+
+    contents.append(pil_to_part(img_lote))
+
     response = client.models.generate_content(
-    model=MODEL_ID,
-    contents=[
-        prompt,
-        *[types.Part.from_image(img) for img in imagenes_refs],
-        types.Part.from_image(img_lote)
-    ]
-)
+        model=MODEL_ID,
+        contents=contents
+    )
+
     return response.text.strip()
+
+
 
 @app.route('/analizar_fundido', methods=['POST'])
 def analizar_fundido():
@@ -227,15 +254,21 @@ Si no hay aptas, omite ese bloque. Si todas son aptas, omite el listado de falla
 
 No añadas introducciones ni conclusiones. Solo los bloques de datos.
     """
+     
+    contents = [prompt]
+
+    for img in imagenes_refs:
+        contents.append(pil_to_part(img))
+
+    contents.append(pil_to_part(img_lote))
+
     response = client.models.generate_content(
-    model=MODEL_ID,
-    contents=[
-        prompt,
-        *[types.Part.from_image(img) for img in imagenes_refs],
-        types.Part.from_image(img_lote)
-    ]
-)
+        model=MODEL_ID,
+        contents=contents
+    )
+
     return response.text.strip()
+
 
 if __name__ == '__main__':
     # Ejecución del servidor
