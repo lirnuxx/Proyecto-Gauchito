@@ -124,6 +124,7 @@ def analizar_gratinado():
     
     prompt = """
     ACTÚA COMO UN AUDITOR DE CONTROL DE CALIDAD VISUAL (ESPECIALISTA EN ALIMENTOS). Tu misión es determinar la aptitud de una muestra de queso gratinado comparándola con un estándar de referencia.
+    NUMERAR LAS MUESTRAS ACORDE A LOS NUMEROS DE LA FOTO, NO AGREGAR NI QUITAR UN VALOR/NUMERO. RESPONDER SOLO CON EL FORMATO SOLICITADO, SIN EXPLICACIONES ADICIONALES.
 
 1. CRITERIOS DE CLASIFICACIÓN
 RANGO DORADO (APTO): Color y textura comprendidos entre las Imágenes 1, 2, 3 y 4.
@@ -175,6 +176,8 @@ def analizar_color():
     
     prompt = """
     IA AUDITORA DE TEXTURA DE ROLLITOS DE MOZZARELLA.
+    NUMERAR LAS MUESTRAS ACORDE A LOS NUMEROS DE LA FOTO, NO AGREGAR NI QUITAR UN VALOR/NUMERO. RESPONDER SOLO CON EL FORMATO SOLICITADO, SIN EXPLICACIONES ADICIONALES.
+
  1. CALIBRACIÓN DE "BLANCO REAL" (MARGEN DE TOLERANCIA)
 EL BLANCO NO ES PERFECTO: Entiende que las Imágenes 1, 2 y 3 no son blanco puro (#FFFFFF), sino que tienen matices neutros (hueso, gris claro, crema muy pálido).
 
@@ -231,6 +234,8 @@ def analizar_fundido():
     
     prompt = """
     IA AUDITORA DE fundido DE MOZZARELLA.
+    NUMERAR LAS MUESTRAS ACORDE A LOS NUMEROS DE LA FOTO, NO AGREGAR NI QUITAR UN VALOR/NUMERO. RESPONDER SOLO CON EL FORMATO SOLICITADO, SIN EXPLICACIONES ADICIONALES.
+    
     Usa las fotos de referencia: las primeras 3 son aptas,  el restoo, estos 3 Errores: Falta de Fundido(aparencia de relieve, puntas o zonas quemadas/oscuras, se mantiene la estructura original del corte), Separación de Fases(canales con liquidos amarillentos), Brownie (blister o burbujas quemadas/oscuras en gran cantidad que supere mas del 20% de la superficie o en su defecto que esten agrupadas en una zona puntual)).
     Aquellas planchas aptas son aquellas que no presentan ninguno de los errores mencionados, y además de apariencia lisa, sin grumos ni surcos, un brillo y color uniforme.
     INSTRUCCIONES:
