@@ -2,7 +2,7 @@ import io
 import os
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
-import google.genai as genai
+from google import genai
 from PIL import Image              
 
 app = Flask(__name__)
@@ -11,9 +11,8 @@ app.secret_key = 'A231Juhsda334gtyfaus-1204os-NADHsf' # Cambia esto por algo ale
 
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=API_KEY)
+client = genai.Client(api_key=API_KEY)
 MODEL_ID = "gemini-3-flash-preview"
-model = genai.GenerativeModel(MODEL_ID)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -134,11 +133,14 @@ Responde ÚNICAMENTE con este formato, sin introducciones ni explicaciones: Mues
     
     
     
-    response = model.generate_content([
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=[
         prompt,
         *imagenes_refs,
         img_lote
-    ])
+    ]
+)
     return response.text.strip()
 
 @app.route('/analizar_color', methods=['POST'])
@@ -183,11 +185,14 @@ NO APTO (Rango Cálido): Tonos claramente amarillos, pajizos o ámbar (Similares
     
     
     
-    response = model.generate_content([
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=[
         prompt,
         *imagenes_refs,
         img_lote
-    ])
+    ]
+)
     return response.text.strip()
 
 @app.route('/analizar_fundido', methods=['POST'])
@@ -228,11 +233,14 @@ Si no hay aptas, omite ese bloque. Si todas son aptas, omite el listado de falla
 No añadas introducciones ni conclusiones. Solo los bloques de datos.
     """
     
-    response = model.generate_content([
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=[
         prompt,
         *imagenes_refs,
         img_lote
-    ])
+    ]
+)
     return response.text.strip()
 
 if __name__ == '__main__':
