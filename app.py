@@ -1,5 +1,6 @@
 import io
 import os
+from google.genai import types
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from google import genai
@@ -130,15 +131,12 @@ Si la muestra es porosa, el veredicto SIEMPRE es NO APTO - POROSA, aunque el col
 4. FORMATO DE RESPUESTA (ESTRICTO)
 Responde ÚNICAMENTE con este formato, sin introducciones ni explicaciones: Muestra [N]: [APTO/NO APTO] - [MOTIVO] (Motivos posibles: RANGO DORADO / QUEMADA / POROSA / CRUDA)
     """
-    
-    
-    
     response = client.models.generate_content(
     model=MODEL_ID,
     contents=[
         prompt,
-        *imagenes_refs,
-        img_lote
+        *[types.Part.from_image(img) for img in imagenes_refs],
+        types.Part.from_image(img_lote)
     ]
 )
     return response.text.strip()
@@ -182,15 +180,12 @@ NO APTO (Rango Cálido): Tonos claramente amarillos, pajizos o ámbar (Similares
 
     BLOQUE NO APTA: Si hay muestras amarillas, escribe una unica línea: [NO APTO AMARILLO ("LA EMPANADERIA"): N° [N], N° [N]... ]
     """
-    
-    
-    
     response = client.models.generate_content(
     model=MODEL_ID,
     contents=[
         prompt,
-        *imagenes_refs,
-        img_lote
+        *[types.Part.from_image(img) for img in imagenes_refs],
+        types.Part.from_image(img_lote)
     ]
 )
     return response.text.strip()
@@ -232,13 +227,12 @@ Si no hay aptas, omite ese bloque. Si todas son aptas, omite el listado de falla
 
 No añadas introducciones ni conclusiones. Solo los bloques de datos.
     """
-    
     response = client.models.generate_content(
     model=MODEL_ID,
     contents=[
         prompt,
-        *imagenes_refs,
-        img_lote
+        *[types.Part.from_image(img) for img in imagenes_refs],
+        types.Part.from_image(img_lote)
     ]
 )
     return response.text.strip()
