@@ -26,7 +26,7 @@ def pil_to_part(img):
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=API_KEY)
-MODEL_ID = "gemini-3-flash-preview"
+MODEL_ID = "gemini-2.5-flash"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
