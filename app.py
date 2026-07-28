@@ -24,8 +24,13 @@ def pil_to_part(img):
         )
     )
 
-API_KEY = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=API_KEY)
+API_KEY = os.getenv("GEMINI_API_KEY")
+if API_KEY:
+    client = genai.Client(api_key=API_KEY)
+else:
+    # If GEMINI_API_KEY is set in environment, genai.Client() automatically picks it up!
+    client = genai.Client()
+    
 MODEL_ID = "gemini-2.5-flash"
 
 login_manager = LoginManager()
